@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Account < ApplicationRecord
+class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -15,4 +15,9 @@ class Account < ApplicationRecord
            class_name: 'Doorkeeper::AccessToken',
            foreign_key: :resource_owner_id,
            dependent: :delete_all # or :destroy if you need callbacks
+
+  enum role: {
+    admin: 'admin',
+    employee: 'employee'
+  }
 end

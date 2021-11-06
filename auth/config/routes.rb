@@ -2,10 +2,12 @@
 
 Rails.application.routes.draw do
   use_doorkeeper
-  devise_for :accounts, controllers: {
-    registrations: 'accounts/registrations',
-    sessions: 'accounts/sessions'
+  devise_for :users, controllers: {
+    registrations: 'users/registrations',
+    sessions: 'users/sessions'
   }
 
-  root to: "accounts#index"
+  root to: "users#index"
+
+  resources :users, only: [:edit, :update, :destroy]
 end

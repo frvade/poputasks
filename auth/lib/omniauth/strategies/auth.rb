@@ -3,7 +3,7 @@
 module OmniAuth
   module Strategies
     class Auth < OmniAuth::Strategies::OAuth2
-      option :name, :keepa
+      option :name, :auth
 
       option :client_options, {
         site: 'http://localhost:3000/oauth/authorize',
@@ -22,7 +22,7 @@ module OmniAuth
       end
 
       def raw_info
-        @raw_info ||= access_token.get('/accounts/current').parsed
+        @raw_info ||= access_token.get('/users/current').parsed
       end
     end
   end
