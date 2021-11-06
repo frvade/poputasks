@@ -2,6 +2,8 @@
 
 class DeviseCreateAccounts < ActiveRecord::Migration[6.1]
   def change
+    enable_extension 'pgcrypto'
+
     create_table :accounts do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
