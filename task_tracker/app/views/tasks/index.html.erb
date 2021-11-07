@@ -1,0 +1,35 @@
+<h1>Tasks</h1>
+<h3>Hello, <%= current_user.name %></h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Assignee</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tasks.each do |task| %>
+      <tr>
+        <td><%= task.title %></td>
+        <td><%= task.description %></td>
+        <td><%= task.assignee.name %></td>
+        <td><%= link_to 'Show', task %></td>
+        <td><%= task.open? && current_user.admin? ? link_to('Edit', edit_task_path(task)) : "" %></td>
+        <td><%= task.completed? ? "Completed" : link_to('Complete', complete_task_path(task), method: :patch) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+<% if current_user.admin? %>
+  <%= link_to 'New Task', new_task_path %>
+  <br>
+  <br>
+<% end %>
+
+<%= link_to 'Logout', logout_path, method: :delete %>

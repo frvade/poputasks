@@ -7,7 +7,8 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
   }
 
-  root to: "users#index"
+  root to: 'users#index'
 
-  resources :users, only: [:edit, :update, :destroy]
+  resources :users, only: %i[edit update destroy]
+  get '/users/current', to: 'users#current'
 end

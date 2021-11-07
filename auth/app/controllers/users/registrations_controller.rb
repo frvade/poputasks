@@ -17,9 +17,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
       # ----------------------------- produce event -----------------------
       event = {
         event_name: 'UserCreated',
-        data: { public_id: user.public_id }
+        data: user.to_json
       }
-      EventProducer.call(event.to_json, topic: 'users-stream')
+      EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
       # --------------------------------------------------------------------
     end
   end

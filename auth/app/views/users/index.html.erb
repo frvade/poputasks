@@ -1,4 +1,5 @@
 <h1>Users</h1>
+<h3>Hello, <%= current_user.name %></h3>
 
 <table>
   <thead>
@@ -6,6 +7,7 @@
     <th>id</th>
     <th>public_id</th>
     <th>email</th>
+    <th>name</th>
     <th>active</th>
     <th>role</th>
     <th></th>
@@ -19,6 +21,7 @@
       <td><%= user.id %></td>
       <td><%= user.public_id %></td>
       <td><%= user.email %></td>
+      <td><%= user.name %></td>
       <td><%= user.active %></td>
       <td><%= user.role %></td>
       <td><%= link_to 'Edit', edit_user_path(user) %></td>

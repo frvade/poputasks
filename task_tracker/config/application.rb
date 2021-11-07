@@ -34,5 +34,11 @@ module TaskTracker
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.active_record.schema_format = :sql
+
+    config.session_store :cookie_store, key: '_tasks_session'
+    config.middleware.use ActionDispatch::Cookies # Required for all session management
+    config.middleware.use ActionDispatch::Session::CookieStore, config.session_options
   end
 end

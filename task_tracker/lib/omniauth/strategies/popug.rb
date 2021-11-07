@@ -2,12 +2,12 @@
 
 module OmniAuth
   module Strategies
-    class Auth < OmniAuth::Strategies::OAuth2
-      option :name, :auth
+    class Popug < OmniAuth::Strategies::OAuth2
+      option :name, :popug
 
       option :client_options, {
-        site: 'http://localhost:3000/oauth/authorize',
-        authorize_url: 'http://localhost:3000/oauth/authorize'
+        site: 'http://127.0.0.1:3000/oauth/authorize',
+        authorize_url: 'http://127.0.0.1:3000/oauth/authorize'
       }
 
       uid { raw_info['public_id'] }
@@ -15,9 +15,11 @@ module OmniAuth
       info do
         {
           email: raw_info['email'],
+          name: raw_info['name'],
           active: raw_info['active'],
           role: raw_info['role'],
-          public_id: raw_info['public_id']
+          public_id: raw_info['public_id'],
+          disabled_at: raw_info['disabled_at'],
         }
       end
 

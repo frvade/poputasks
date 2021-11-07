@@ -3,7 +3,7 @@
 class EventProducer
   class << self
     def call(event, **payload)
-      puts "Produce: #{event.inspect}"
+      WaterDrop::SyncProducer.call(event, payload)
     end
   end
 end

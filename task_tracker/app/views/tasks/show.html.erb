@@ -1,0 +1,22 @@
+<p>
+  <strong>Title:</strong>
+  <%= @task.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @task.description %>
+</p>
+
+<p>
+  <strong>Assignee:</strong>
+  <%= [@task.assignee.public_id, @task.assignee.name].join(", ") %>
+</p>
+
+<% if current_user.admin? %>
+  <%= link_to('Edit', edit_task_path(@task)) %> |
+<% end %>
+<% if @task.open? %>
+  <%= link_to('Complete', complete_task_path(@task), method: :patch) %> |
+<% end %>
+<%= link_to 'Back', tasks_path %>

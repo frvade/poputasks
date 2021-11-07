@@ -7,10 +7,13 @@ class AddFieldsToUsers < ActiveRecord::Migration[6.1]
     SQL
     add_column :users, :role, :user_roles, null: false, default: 'employee'
     add_column :users, :active, :bool, null: false, default: true
+    add_column :users, :name, :string, null: true
     add_column :users, :disabled_at, :timestamp, null: true
   end
 
   def down
+    remove_column :users, :disabled_at
+    remove_column :users, :name
     remove_column :users, :active
     remove_column :users, :role
     execute <<~SQL

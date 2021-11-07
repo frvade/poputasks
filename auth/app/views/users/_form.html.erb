@@ -11,7 +11,13 @@
     </div>
   <% end %>
 
-  <div>
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field(:name) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :role %>
     <%= form.select(:role, [['Admin', 'admin'], ['Employee', 'employee']]) %>
   </div>
 
