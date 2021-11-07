@@ -12,6 +12,5 @@ class ApplicationController < ActionController::Base
 
     @current_user ||= User.find_by_id(session[:user_id]) unless session[:expires_at] < Time.now.to_i
   end
-
   helper_method :current_user
 end

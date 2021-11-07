@@ -32,12 +32,12 @@ class TaskTrackerKarafka < Karafka::App
   # Be aware, that this might have some side-effects. Please refer to the wiki
   # for more details on benefits and downsides of the code reload in the
   # development mode
-  #
-  # Karafka.monitor.subscribe(
-  #   Karafka::CodeReloader.new(
-  #     *Rails.application.reloaders
-  #   )
-  # )
+
+  Karafka.monitor.subscribe(
+    Karafka::CodeReloader.new(
+      *Rails.application.reloaders
+    )
+  )
 
   consumer_groups.draw do
     topic :"users-stream" do
@@ -47,16 +47,6 @@ class TaskTrackerKarafka < Karafka::App
     topic :users do
       consumer UsersConsumer
     end
-
-    # consumer_group :bigger_group do
-    #   topic :test do
-    #     consumer TestConsumer
-    #   end
-    #
-    #   topic :test2 do
-    #     consumer Test2Consumer
-    #   end
-    # end
   end
 end
 

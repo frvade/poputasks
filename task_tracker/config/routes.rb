@@ -9,8 +9,6 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create'
 
   resources :tasks do
-    member do
-      patch 'complete'
-    end
+    patch 'complete', on: :member
   end
 end
