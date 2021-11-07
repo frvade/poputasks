@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class EventProducer
-  class << self
-    def call(event, **payload)
-      WaterDrop::SyncProducer.call(event, payload)
-    end
+  def self.produce_sync(payload:, topic:)
+    WaterDrop::SyncProducer.call(payload, topic: topic)
   end
 end

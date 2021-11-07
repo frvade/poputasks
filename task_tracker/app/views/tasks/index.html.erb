@@ -4,6 +4,8 @@
 <table>
   <thead>
     <tr>
+      <th>Id</th>
+      <th>Public id</th>
       <th>Title</th>
       <th>Description</th>
       <th>Assignee</th>
@@ -14,6 +16,8 @@
   <tbody>
     <% @tasks.each do |task| %>
       <tr>
+        <td><%= task.id %></td>
+        <td><%= task.public_id %></td>
         <td><%= task.title %></td>
         <td><%= task.description %></td>
         <td><%= task.assignee.name %></td>
@@ -27,7 +31,8 @@
 
 <br>
 <% if current_user.admin? %>
-  <%= link_to 'New Task', new_task_path %>
+  <%= link_to 'New Task', new_task_path %> |
+  <%= link_to 'Assign Tasks', assign_tasks_path, method: :post %>
   <br>
   <br>
 <% end %>

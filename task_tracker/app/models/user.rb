@@ -7,4 +7,6 @@ class User < ApplicationRecord
     admin: 'admin',
     employee: 'employee'
   }
+
+  scope :random, -> { order("RANDOM()") }
 end

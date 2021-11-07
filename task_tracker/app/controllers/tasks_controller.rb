@@ -56,6 +56,21 @@ class TasksController < ApplicationController
     end
   end
 
+  def assign
+    open_tasks = Task.open
+    users = User.employee.random.take(open_tasks.count)
+    result = nil
+      Task.transaction do
+      open_tasks.each do |task|
+        result = Commands::Tasks::Assign.call(task, users.sample)
+        raise ActiveRecord::Rollback if result.failure?
+      end
+    end
+
+    redirect_to tasks_path, alert: "Error occured during tasks reassignment." if result&.failure?
+    redirect_to tasks_path, notice: "Tasks were successfully completed."
+  end
+
   private
 
   def check_admin!
