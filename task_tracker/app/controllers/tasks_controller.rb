@@ -50,8 +50,8 @@ class TasksController < ApplicationController
     if result.success?
       redirect_to tasks_path, notice: "Task was successfully completed."
     else
-      error = nil
-      result.value_or { |e| error = "You aren't allowed to complete this task" if e.code == :forbidden }
+      error = "Unknown error occurred during task completion."
+      result.value_or { |e| error = "You aren't allowed to complete this task." if e.code == :forbidden }
       redirect_to tasks_path, alert: error
     end
   end
@@ -59,15 +59,13 @@ class TasksController < ApplicationController
   def assign
     open_tasks = Task.open
     users = User.employee.random.take(open_tasks.count)
-    result = nil
-      Task.transaction do
-      open_tasks.each do |task|
-        result = Commands::Tasks::Assign.call(task, users.sample)
-        raise ActiveRecord::Rollback if result.failure?
-      end
+    failed = []
+    open_tasks.each do |task|
+      assign = Commands::Tasks::Assign.call(task, users.sample)
+      failed << task if assign.failure?
     end
 
-    redirect_to tasks_path, alert: "Error occured during tasks reassignment." if result&.failure?
+    redirect_to tasks_path, alert: "Error occurred during tasks reassignment." if failed.any?
     redirect_to tasks_path, notice: "Tasks were successfully completed."
   end
 

@@ -1,16 +1,14 @@
 class CreateUsers < ActiveRecord::Migration[6.1]
   def change
     create_table :users do |t|
-      t.string :email, null: false
-      t.string :name, null: true
-      t.string :role, null: false
-      t.boolean :active, null: false
-      t.uuid :public_id, null: false
+      t.string :email, null: false, default: ""
+      t.string :name, null: true, default: ""
+      t.string :role, null: false, default: ""
+      t.boolean :active, null: false, default: false
+      t.uuid :public_id, null: false, unique: true
       t.timestamp :disabled_at, null: true
 
-      t.timestamps null: false
+      t.timestamps
     end
-
-    add_index :users, :public_id, unique: true
   end
 end

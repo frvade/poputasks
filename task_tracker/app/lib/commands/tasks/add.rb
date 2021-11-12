@@ -6,20 +6,27 @@ module Commands
       param :task, SmartCore::Types::Protocol::InstanceOf(Task)
 
       def call
-        task.transaction do
-          raise ActiveRecord::Rollback unless task.save
-
-          assign_result = Commands::Tasks::Assign.call(task, task.assignee)
-          raise ActiveRecord::Rollback if assign_result.failure?
-        end
-
-        fail!(:not_saved, { message: "Task wasn't saved", task: task }) unless task.persisted?
+        task.save or fail!(:not_saved, { message: "Task wasn't saved", task: task })
 
         event = {
           event_name: 'TaskCreated',
-          data: task.to_json
+          data: task.to_h
         }
         EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
+
+        Commands::Tasks::Assign.call!(task, task.assignee)
+
+        event = {
+          event_name: 'TaskAdded',
+          data: {
+            title: task.title,
+            description: task.description,
+            public_id: task.public_id,
+            assignee_id: task.assignee_id,
+          }
+        }
+        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
+
         success!(task)
       end
     end

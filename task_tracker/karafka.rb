@@ -18,14 +18,15 @@ class TaskTrackerKarafka < Karafka::App
   setup do |config|
     config.kafka.seed_brokers = %w[kafka://127.0.0.1:9092]
     config.client_id = 'task_tracker'
+    config.batch_consuming = true
   end
 
   # Comment out this part if you are not using instrumentation and/or you are not
   # interested in logging events for certain environments. Since instrumentation
   # notifications add extra boilerplate, if you want to achieve max performance,
   # listen to only what you really need for given environment.
-  Karafka.monitor.subscribe(WaterDrop::Instrumentation::StdoutListener.new)
-  Karafka.monitor.subscribe(Karafka::Instrumentation::StdoutListener.new)
+  #Karafka.monitor.subscribe(WaterDrop::Instrumentation::StdoutListener.new)
+  #Karafka.monitor.subscribe(Karafka::Instrumentation::StdoutListener.new)
   # Karafka.monitor.subscribe(Karafka::Instrumentation::ProctitleListener.new)
 
   # Uncomment that in order to achieve code reload in development mode
@@ -44,8 +45,8 @@ class TaskTrackerKarafka < Karafka::App
       consumer UsersStreamConsumer
     end
 
-    topic :users do
-      consumer UsersConsumer
+    topic :"users-role-changes" do
+      consumer UsersRoleChangesConsumer
     end
   end
 end

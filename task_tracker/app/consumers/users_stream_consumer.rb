@@ -2,7 +2,11 @@
 
 class UsersStreamConsumer < ApplicationConsumer
   def consume
-    payloads = params_batch.payloads.map { |p| JSON.parse(p['data']) }
-    User.upsert_all(payloads, unique_by: :public_id)
+    events = params_batch.payloads.reduce({}) do |total, event|
+      event_data = event['data']
+      total[event_data['public_id']] = (total[event_data['public_id']] || {}).merge(event_data)
+      total
+    end
+    User.upsert_all(events.values, unique_by: :public_id)
   end
 end

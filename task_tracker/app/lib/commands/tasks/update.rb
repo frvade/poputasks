@@ -12,7 +12,7 @@ module Commands
         # CUD event
         event = {
           event_name: 'TaskUpdated',
-          data: task.to_json
+          data: task_params.to_h.merge(public_id: task.public_id)
         }
         EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
 

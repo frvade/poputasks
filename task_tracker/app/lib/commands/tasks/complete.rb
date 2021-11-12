@@ -13,16 +13,16 @@ module Commands
         # CUD event
         event = {
           event_name: 'TaskUpdated',
-          data: task.to_json
+          data: { public_id: task.public_id, assignee_id: task.assignee.public_id }
         }
         EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
 
         # Business event
         event = {
           event_name: 'TaskCompleted',
-          data: { public_id: task.public_id, status: task.status }
+          data: { public_id: task.public_id }
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks')
+        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
 
         success!(task)
       end

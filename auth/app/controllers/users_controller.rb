@@ -31,16 +31,16 @@ class UsersController < ApplicationController
         # ----------------------------- produce event -----------------------
         event = {
           event_name: 'UserUpdated',
-          data: @user.to_json
+          data: user_params.to_h.merge(public_id: @user.public_id)
         }
         EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
 
         if new_role
           event = {
             event_name: 'UserRoleChanged',
-            data: { public_id: public_id, role: new_role }
+            data: { public_id: @user.public_id, new_role: new_role }
           }
-          EventProducer.produce_sync(payload: event.to_json, topic: 'users')
+          EventProducer.produce_sync(payload: event.to_json, topic: 'users-role-changes')
         end
 
         # --------------------------------------------------------------------
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
     # ----------------------------- produce event -----------------------
     event = {
       event_name: 'UserDeleted',
-      data: { public_id: @user.public_id, active: @user.active }
+      data: { public_id: @user.public_id }
     }
     EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
     # --------------------------------------------------------------------
