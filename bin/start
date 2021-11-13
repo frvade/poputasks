@@ -2,19 +2,26 @@
 
 APP_ROOT = File.expand_path('..', __dir__)
 
-auth = fork do
+fork do
   Dir.chdir([APP_ROOT, 'auth'].join(File::SEPARATOR)) do
+    system "bundle exec webpack"
     exec "bundle exec rails s"
   end
 end
-task_tracker = fork do
+fork do
   Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
+    system "bundle exec webpack"
+    spawn "bundle exec karafka s"
     exec "bundle exec rails s -p 2000"
   end
+  Process.waitall
 end
-karafka = fork do
-  Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
-    exec "bundle exec karafka s"
+fork do
+  Dir.chdir([APP_ROOT, 'accounting'].join(File::SEPARATOR)) do
+    system "bundle exec webpack"
+    spawn "bundle exec karafka s"
+    exec "bundle exec rails s -p 1000"
   end
+  Process.waitall
 end
 Process.waitall
