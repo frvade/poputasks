@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+APP_ROOT = File.expand_path('..', __dir__)
+
+auth = fork do
+  Dir.chdir([APP_ROOT, 'auth'].join(File::SEPARATOR)) do
+    exec "bundle exec rails s"
+  end
+end
+task_tracker = fork do
+  Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
+    exec "bundle exec rails s -p 2000"
+  end
+end
+karafka = fork do
+  Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
+    exec "bundle exec karafka s"
+  end
+end
+Process.waitall
