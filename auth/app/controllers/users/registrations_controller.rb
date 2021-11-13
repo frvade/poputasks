@@ -12,14 +12,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super do |user|
-      break unless resource.persisted?
+      break unless user.persisted?
 
       # ----------------------------- produce event -----------------------
+      user_atrributes = user.reload.attributes.symbolize_keys.slice(:public_id, :email, :name, :role)
       event = {
         event_name: 'UserCreated',
-        data: user.to_h
+        event_version: 1,
+        data: user_atrributes
       }
-      EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
+      EventProducer.produce_sync(event, 'users.created', 'users-stream')
       # --------------------------------------------------------------------
     end
   end
@@ -69,4 +71,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  private
+
+  def user_event_data
+    {
+      event_id: SecureRandom.uuid,
+      event_version: 1,
+      event_time: Time.now.to_s,
+      producer: 'auth_service',
+    }
+  end
 end

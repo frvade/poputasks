@@ -9,19 +9,12 @@ module Commands
       def call
         fail!(:not_assigned) unless task.update(assignee: assignee)
 
-        # CUD event
-        event = {
-          event_name: 'TaskUpdated',
-          data: { public_id: task.public_id, assignee_id: assignee.public_id }
-        }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
-
         # Business event
         event = {
           event_name: 'TaskAssigned',
-          data: { public_id: task.public_id, assignee_id: assignee.public_id }
+          data: { public_id: task.public_id, assignee: { public_id: assignee.public_id } }
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
+        EventProducer.produce_sync(event, 'tasks.assigned', 'tasks-lifecycle')
 
         success!(task)
       end

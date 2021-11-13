@@ -7,7 +7,7 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    tasks_dataset = Task.order(:id)
+    tasks_dataset = Task.includes(:assignee).order(:id)
     tasks_dataset = tasks_dataset.where(assignee: current_user) unless current_user.admin?
     @tasks = tasks_dataset.all
   end

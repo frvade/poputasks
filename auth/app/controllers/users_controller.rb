@@ -25,22 +25,25 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
+      @user.attributes = user_params
       new_role = @user.role_changed? ? user_params[:role] : nil
 
-      if @user.update(user_params)
+      if @user.save
         # ----------------------------- produce event -----------------------
         event = {
           event_name: 'UserUpdated',
+          event_version: 1,
           data: user_params.to_h.merge(public_id: @user.public_id)
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
+        EventProducer.produce_sync(event, 'users.updated', 'users-stream')
 
         if new_role
           event = {
             event_name: 'UserRoleChanged',
+            event_version: 1,
             data: { public_id: @user.public_id, new_role: new_role }
           }
-          EventProducer.produce_sync(payload: event.to_json, topic: 'users-role-changes')
+          EventProducer.produce_sync(event, 'users.role_changed', 'users-role-changes')
         end
 
         # --------------------------------------------------------------------
@@ -64,9 +67,10 @@ class UsersController < ApplicationController
     # ----------------------------- produce event -----------------------
     event = {
       event_name: 'UserDeleted',
+      event_version: 1,
       data: { public_id: @user.public_id }
     }
-    EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
+    EventProducer.produce_sync(event, 'users.deleted', 'users-stream')
     # --------------------------------------------------------------------
 
     respond_to do |format|
