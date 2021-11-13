@@ -6,6 +6,7 @@ module Commands
       param :task, SmartCore::Types::Protocol::InstanceOf(Task)
 
       def call
+        fail!(:invalid) unless validate_task
         task.save or fail!(:not_saved, { message: "Task wasn't saved", task: task })
 
         event = {
@@ -28,6 +29,12 @@ module Commands
         EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
 
         success!(task)
+      end
+
+      private
+
+      def validate_task
+        Validators::TaskValidator.call(task).success?
       end
     end
   end

@@ -7,7 +7,9 @@ module Commands
       param :task_params
 
       def call
-        fail!(:not_updated) unless task.update(task_params)
+        @task.assign_attributes(task_params)
+        fail!(:invalid) unless validate_task
+        fail!(:not_updated) unless task.save
 
         # CUD event
         event = {
@@ -17,6 +19,12 @@ module Commands
         EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
 
         success!(task)
+      end
+
+      private
+
+      def validate_task
+        Validators::TaskValidator.call(task).success?
       end
     end
   end
