@@ -3,7 +3,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:current]
 
   # GET /users
   # GET /users.json
@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   # GET /users/current.json
   def current
     respond_to do |format|
-      format.json { render json: current_users }
+      format.json { render json: current_user }
     end
   end
 
@@ -31,19 +31,16 @@ class UsersController < ApplicationController
         # ----------------------------- produce event -----------------------
         event = {
           event_name: 'UserUpdated',
-          data: {
-            public_id: @user.public_id,
-            email: @user.email,
-          }
+          data: user_params.to_h.merge(public_id: @user.public_id)
         }
-        EventProducer.call(event.to_json, topic: 'users-stream')
+        EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
 
         if new_role
           event = {
             event_name: 'UserRoleChanged',
-            data: { public_id: public_id, role: new_role }
+            data: { public_id: @user.public_id, new_role: new_role }
           }
-          EventProducer.call(event.to_json, topic: 'users')
+          EventProducer.produce_sync(payload: event.to_json, topic: 'users-role-changes')
         end
 
         # --------------------------------------------------------------------
@@ -69,7 +66,7 @@ class UsersController < ApplicationController
       event_name: 'UserDeleted',
       data: { public_id: @user.public_id }
     }
-    EventProducer.call(event.to_json, topic: 'users-stream')
+    EventProducer.produce_sync(payload: event.to_json, topic: 'users-stream')
     # --------------------------------------------------------------------
 
     respond_to do |format|
@@ -94,6 +91,6 @@ class UsersController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def user_params
-    params.require(:user).permit(:role)
+    params.require(:user).permit(:role, :name)
   end
 end

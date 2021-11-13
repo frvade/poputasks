@@ -183,6 +183,7 @@ CREATE TABLE public.users (
     updated_at timestamp(6) without time zone NOT NULL,
     role public.user_roles DEFAULT 'employee'::public.user_roles NOT NULL,
     active boolean DEFAULT true NOT NULL,
+    name character varying,
     disabled_at timestamp without time zone
 );
 
