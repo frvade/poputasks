@@ -7,7 +7,7 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    tasks_dataset = Task.order(:id)
+    tasks_dataset = Task.includes(:assignee).order(:id)
     tasks_dataset = tasks_dataset.where(assignee: current_user) unless current_user.admin?
     @tasks = tasks_dataset.all
   end
@@ -86,6 +86,6 @@ class TasksController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def task_params
-    params.require(:task).permit(:title, :description, :assignee_id)
+    params.require(:task).permit(:title, :jira_id, :description, :assignee_id)
   end
 end

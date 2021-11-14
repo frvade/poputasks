@@ -7,11 +7,11 @@ Rails.application.eager_load!
 
 # This lines will make Karafka print to stdout like puma or unicorn
 if Rails.env.development?
-  Rails.logger.extend(
-    ActiveSupport::Logger.broadcast(
-      ActiveSupport::Logger.new($stdout)
-    )
-  )
+  # Rails.logger.extend(
+  #   ActiveSupport::Logger.broadcast(
+  #     ActiveSupport::Logger.new($stdout)
+  #   )
+  # )
 end
 
 class TaskTrackerKarafka < Karafka::App
@@ -42,11 +42,11 @@ class TaskTrackerKarafka < Karafka::App
 
   consumer_groups.draw do
     topic :"users-stream" do
-      consumer UsersStreamConsumer
+      consumer UsersConsumer
     end
 
     topic :"users-role-changes" do
-      consumer UsersRoleChangesConsumer
+      consumer UsersConsumer
     end
   end
 end

@@ -7,21 +7,16 @@ module Commands
       param :assignee, SmartCore::Types::Protocol::InstanceOf(User)
 
       def call
-        fail!(:not_assigned) unless task.update(assignee: assignee)
-
-        # CUD event
-        event = {
-          event_name: 'TaskUpdated',
-          data: { public_id: task.public_id, assignee_id: assignee.public_id }
-        }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
+        task.assignee = assignee
+        fail!(:not_assigned) unless task.save
 
         # Business event
         event = {
           event_name: 'TaskAssigned',
-          data: { public_id: task.public_id, assignee_id: assignee.public_id }
+          event_version: 1,
+          data: { public_id: task.public_id, assignee: { public_id: assignee.public_id } }
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
+        EventProducer.produce_sync(event, 'tasks.assigned', 'tasks-lifecycle')
 
         success!(task)
       end

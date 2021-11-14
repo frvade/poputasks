@@ -7,16 +7,26 @@ module Commands
       param :task_params
 
       def call
-        fail!(:not_updated) unless task.update(task_params)
+        task.assign_attributes(task_params)
+        fail!(:invalid) unless validate_task
+        fail!(:not_updated) unless task.save
 
         # CUD event
+        task_attributes = task.attributes.slice(*%w[title jira_id description status])
         event = {
           event_name: 'TaskUpdated',
-          data: task_params.to_h.merge(public_id: task.public_id)
+          event_version: 2,
+          data: task_attributes.merge(public_id: task.public_id)
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
+        EventProducer.produce_sync(event, 'tasks.updated', 'tasks-stream')
 
         success!(task)
+      end
+
+      private
+
+      def validate_task
+        Validators::TaskValidator.call(task).success?
       end
     end
   end

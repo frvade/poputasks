@@ -1,0 +1,42 @@
+<h1>Transactions</h1>
+<h3>Hello, <%= current_user.name %></h3>
+
+<% if current_user.admin? %>
+  <h4>Today the company earned <%= today_earnings_sum %> popubuks</h4>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Assignee</th>
+      <th>Amount</th>
+      <th>Source</th>
+      <th>Type</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @transactions.each do |transaction| %>
+      <tr>
+        <td><%= transaction.created_at %></td>
+        <td><%= transaction.user.name %></td>
+        <td><%= transaction.amount %></td>
+        <td><%= transaction.source.full_title %></td>
+        <td><%= transaction.type %></td>
+        <td><%= link_to 'Show', transaction %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<br>
+<% if current_user.admin? %>
+  <%= link_to 'Manual payout', payout_transactions_path, method: :post %>
+  <br>
+  <br>
+<% end %>
+
+<%= link_to 'Logout', logout_path, method: :delete %>

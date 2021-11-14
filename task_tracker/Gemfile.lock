@@ -1,3 +1,15 @@
+PATH
+  remote: ../popug_oauth_strategy
+  specs:
+    popug_oauth_strategy (1)
+      omniauth-oauth2
+
+PATH
+  remote: ../schema_registry/gem
+  specs:
+    schema_registry (1)
+      json-schema
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -60,6 +72,8 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
     bindex (0.8.1)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
@@ -144,6 +158,8 @@ GEM
       reline (>= 0.2.7)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
+    json-schema (2.8.1)
+      addressable (>= 2.4)
     jwt (2.3.0)
     karafka (1.4.10)
       dry-configurable (~> 0.13)
@@ -193,6 +209,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     pg (1.2.3)
+    public_suffix (4.0.6)
     puma (5.5.2)
       nio4r (~> 2.0)
     qonfig (0.26.0)
@@ -307,11 +324,13 @@ DEPENDENCIES
   omniauth-oauth2
   omniauth-rails_csrf_protection
   pg (~> 1.1)
+  popug_oauth_strategy!
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.4, >= 6.1.4.1)
   resol
   sass-rails (>= 6)
+  schema_registry!
   spring
   tzinfo-data
   web-console (>= 4.1.0)
@@ -321,4 +340,4 @@ RUBY VERSION
    ruby 3.0.2p107
 
 BUNDLED WITH
-   2.2.29
+   2.2.31

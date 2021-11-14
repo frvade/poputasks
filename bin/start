@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+APP_ROOT = File.expand_path('..', __dir__)
+
+Dir.chdir([APP_ROOT, 'auth'].join(File::SEPARATOR)) do
+  spawn "bundle exec rails s"
+end
+Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
+  spawn "bundle exec karafka s"
+  spawn "bundle exec rails s -p 2000"
+end
+Dir.chdir([APP_ROOT, 'accounting'].join(File::SEPARATOR)) do
+  spawn "bundle exec karafka s"
+  spawn "bundle exec rails s -p 4000"
+end
+Dir.chdir([APP_ROOT, 'analytics'].join(File::SEPARATOR)) do
+  spawn "bundle exec karafka s"
+  spawn "bundle exec rails s -p 5000"
+end
+
+Process.waitall

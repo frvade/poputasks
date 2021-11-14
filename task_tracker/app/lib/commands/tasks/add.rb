@@ -6,28 +6,25 @@ module Commands
       param :task, SmartCore::Types::Protocol::InstanceOf(Task)
 
       def call
+        fail!(:invalid) unless validate_task
         task.save or fail!(:not_saved, { message: "Task wasn't saved", task: task })
 
         event = {
           event_name: 'TaskCreated',
-          data: task.to_h
+          event_version: 2,
+          data: task.reload.attributes.slice(*%w[title description jira_id, public_id status])
         }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-stream')
+        EventProducer.produce_sync(event, 'tasks.created', 'tasks-stream')
 
         Commands::Tasks::Assign.call!(task, task.assignee)
 
-        event = {
-          event_name: 'TaskAdded',
-          data: {
-            title: task.title,
-            description: task.description,
-            public_id: task.public_id,
-            assignee_id: task.assignee_id,
-          }
-        }
-        EventProducer.produce_sync(payload: event.to_json, topic: 'tasks-lifecycle')
-
         success!(task)
+      end
+
+      private
+
+      def validate_task
+        Validators::TaskValidator.call(task).success?
       end
     end
   end

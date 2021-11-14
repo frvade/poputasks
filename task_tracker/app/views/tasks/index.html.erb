@@ -7,8 +7,10 @@
       <th>Id</th>
       <th>Public id</th>
       <th>Title</th>
+      <th>Jira id</th>
       <th>Description</th>
       <th>Assignee</th>
+      <th>Status</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -19,11 +21,13 @@
         <td><%= task.id %></td>
         <td><%= task.public_id %></td>
         <td><%= task.title %></td>
+        <td><%= task.jira_id %></td>
         <td><%= task.description %></td>
         <td><%= task.assignee.name %></td>
+        <td><%= task.completed? ? "Millet is in the bowl" : "The bird is in the cage" %></td>
         <td><%= link_to 'Show', task %></td>
         <td><%= task.open? && current_user.admin? ? link_to('Edit', edit_task_path(task)) : "" %></td>
-        <td><%= task.completed? ? "Completed" : link_to('Complete', complete_task_path(task), method: :patch) %></td>
+        <td><%= task.completed? ? "" : link_to('Put millet in the bowl', complete_task_path(task), method: :patch) %></td>
       </tr>
     <% end %>
   </tbody>
