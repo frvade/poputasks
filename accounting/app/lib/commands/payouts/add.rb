@@ -10,16 +10,11 @@ module Commands
         amount = transactions.sum(&:amount)
         success! if amount <= 0
 
-        payout = Payout.new(user: user, amount: amount, public_id: SecureRandom.uuid,
-                            transaction_ids: transactions.map(&:id))
-        payout.transaction do
-          payout.save!
-          User.where(id: user.id).update_all(["balance = balance - ?", payout.amount])
-        end
-        fail! unless payout.persisted?
+        payout = Payout.create!(user: user, amount: amount, public_id: SecureRandom.uuid,
+                                transaction_ids: transactions.map(&:id))
         # if system fails here we can find payouts which aren't source for any transaction
         # and create corresponding transactions
-        Commands::Transactions::Add.call!(user, payout, payout.amount)
+        Commands::Transactions::Add.call!(user, payout, -payout.amount)
 
         event_data = {
           amount: payout.amount, public_id: payout.public_id,
