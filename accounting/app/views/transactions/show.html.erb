@@ -1,0 +1,23 @@
+<p>
+  <strong>Amount:</strong>
+  <%= @transaction.amount %>
+</p>
+
+<p>
+  <strong>Source:</strong>
+  <% case @transaction.source %>
+  <% when Task %>
+    Task <b><%= @transaction.source.full_title %></b>, description: <%= @transaction.source.description %>
+  <% when Payout %>
+    Payout for <b>transactions</b>: <%= @transaction.source.transaction_ids.map { |t| link_to(t.id, t) }.join(", ") %>
+  <% else %>
+    God's will
+  <% end %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @transaction.type %>
+</p>
+
+<%= link_to 'Back', transactions_path %>

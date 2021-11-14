@@ -1,4 +1,10 @@
 PATH
+  remote: ../popug_oauth_strategy
+  specs:
+    popug_oauth_strategy (1)
+      omniauth-oauth2
+
+PATH
   remote: ../schema_registry/gem
   specs:
     schema_registry (1)
@@ -318,6 +324,7 @@ DEPENDENCIES
   omniauth-oauth2
   omniauth-rails_csrf_protection
   pg (~> 1.1)
+  popug_oauth_strategy!
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.4, >= 6.1.4.1)

@@ -17,13 +17,19 @@
         "type": {
           "type": "string"
         },
+        "source": {
+          "$ref": "#/definitions/source"
+        },
         "user": {
           "$ref": "#/definitions/user"
         }
       },
       "required": [
         "public_id",
-        "assignee"
+        "amount",
+        "type",
+        "source",
+        "user"
       ]
     },
     "user": {
@@ -36,6 +42,21 @@
       "required": [
         "public_id"
       ]
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "public_id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "public_id",
+        "type"
+      ]
     }
   },
 
@@ -44,7 +65,7 @@
   "properties": {
     "event_id":      { "type": "string" },
     "event_version": { "enum": [1] },
-    "event_name":    { "enum": ["TaskAssigned"] },
+    "event_name":    { "enum": ["TransactionAdded"] },
     "event_time":    { "type": "string" },
     "producer":      { "type": "string" },
 

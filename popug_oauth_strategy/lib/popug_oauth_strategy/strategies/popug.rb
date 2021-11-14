@@ -19,7 +19,6 @@ module OmniAuth
           active: raw_info['active'],
           role: raw_info['role'],
           public_id: raw_info['public_id'],
-          disabled_at: raw_info['disabled_at'],
         }
       end
 

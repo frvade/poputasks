@@ -2,24 +2,21 @@
 
 class UsersConsumer < ApplicationConsumer
   def consume
-    users = params_batch.payloads.reduce({}) do |total, event|
+    params_batch.payloads.each do |event|
       event_data = event['data']
       public_id = event_data['public_id']
 
-      case event.symbolize_keys
-      in { event_name: 'UserCreated' } | { event_name: 'UserUpdated' }
-        total[public_id] = (total[public_id] || {}).merge(event_data)
-      in { event_name: 'UserRoleChanged' }
-        total[public_id] = (total[public_id] || {}).merge(public_id: public_id, role: event_data['new_role'])
-      in { event_name: 'UserDeleted' }
-        total[public_id] = { public_id: public_id, active: false }
+      case event['event_name']
+      when 'UserCreated', 'UserUpdated'
+      when 'UserRoleChanged'
+        event_data = { public_id: public_id, role: event_data['new_role'] }
+      when 'UserDeleted'
+        event_data = { public_id: public_id, active: false }
       else
         # store events in DB
       end
 
-      total
+      User.upsert(event_data, unique_by: :public_id)
     end
-
-    User.upsert_all(users.values, unique_by: :public_id) if users.any?
   end
 end

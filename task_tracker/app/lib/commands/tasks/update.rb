@@ -12,7 +12,7 @@ module Commands
         fail!(:not_updated) unless task.save
 
         # CUD event
-        task_attributes = task.attributes.slice(:title, :jira_id, :description, :status)
+        task_attributes = task.attributes.slice(*%w[title jira_id description status])
         event = {
           event_name: 'TaskUpdated',
           event_version: 2,

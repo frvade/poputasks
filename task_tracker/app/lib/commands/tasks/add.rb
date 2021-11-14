@@ -12,7 +12,7 @@ module Commands
         event = {
           event_name: 'TaskCreated',
           event_version: 2,
-          data: task.attributes.symbolize_keys.slice(:title, :description, :jira_id, :public_id, :status)
+          data: task.reload.attributes.slice(*%w[title description jira_id, public_id status])
         }
         EventProducer.produce_sync(event, 'tasks.created', 'tasks-stream')
 

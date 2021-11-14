@@ -3,15 +3,13 @@
 APP_ROOT = File.expand_path('..', __dir__)
 
 Dir.chdir([APP_ROOT, 'auth'].join(File::SEPARATOR)) do
-  spawn "bundle exec rails s"
+  spawn "bin/setup"
 end
 Dir.chdir([APP_ROOT, 'task_tracker'].join(File::SEPARATOR)) do
-  spawn "bundle exec karafka s"
-  spawn "bundle exec rails s -p 2000"
+  spawn "bin/setup"
 end
 Dir.chdir([APP_ROOT, 'accounting'].join(File::SEPARATOR)) do
-  spawn "bundle exec karafka s"
-  spawn "bundle exec rails s -p 4000"
+  spawn "bin/setup"
 end
 
 Process.waitall

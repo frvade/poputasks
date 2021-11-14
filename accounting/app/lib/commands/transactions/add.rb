@@ -4,7 +4,7 @@ module Commands
   module Transactions
     class Add < Resol::Service
       param :user, SmartCore::Types::Protocol::InstanceOf(User)
-      param :source, SmartCore::Types::Protocol::InstanceOf(Task)
+      param :source, SmartCore::Types::Protocol::InstanceOf(Task, Payout)
       param :amount, SmartCore::Types::Value::Numeric
 
       def call
@@ -12,11 +12,15 @@ module Commands
                                       type: (amount > 0 ? :deposit : :withdraw))
         transaction.transaction do
           transaction.save!
-          user.update("balance = balance + ?", amount)
+          User.where(id: user.id).update_all(["balance = balance + ?", amount])
         end
         fail! unless transaction.persisted?
 
-        transaction.attributes in { amount:, type:, public_id: , user: { public_id: } } => event_data
+        event_data = {
+          amount: transaction.amount, type: transaction.type, public_id: transaction.public_id,
+          source: { type: transaction.source_type, public_id: source.public_id },
+          user: { public_id: user.public_id }
+        }
         event = {
           event_name: 'TransactionAdded',
           event_version: 1,

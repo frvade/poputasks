@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
 
-  "title": "Tasks.Created.v1",
-  "description": "json schema for CUD task events (version 1)",
+  "title": "Payouts.Added.v1",
+  "description": "json schema for BE task events (version 1)",
 
   "definitions": {
     "event_data": {
@@ -11,21 +11,35 @@
         "public_id": {
           "type": "string"
         },
-        "title": {
-          "type": "string"
+        "amount": {
+          "type": "number"
         },
-        "description": {
-          "type": "string"
+        "transaction_public_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
-        "status": {
-          "type": "string"
+        "user": {
+          "$ref": "#/definitions/user"
         }
       },
       "required": [
         "public_id",
-        "title",
-        "description",
-        "status"
+        "amount",
+        "user",
+        "transaction_public_ids"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "public_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "public_id"
       ]
     }
   },
@@ -35,7 +49,7 @@
   "properties": {
     "event_id":      { "type": "string" },
     "event_version": { "enum": [1] },
-    "event_name":    { "enum": ["TaskCreated"] },
+    "event_name":    { "enum": ["PayoutAdded"] },
     "event_time":    { "type": "string" },
     "producer":      { "type": "string" },
 

@@ -7,7 +7,7 @@ module Commands
 
       def call
         price = calculate_price
-        task.update(price: price) or fail!
+        task.update(price: price) or fail!(:not_updated)
 
         event = {
           event_name: 'TaskPriced',
