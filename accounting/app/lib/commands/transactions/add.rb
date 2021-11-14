@@ -19,7 +19,8 @@ module Commands
         event_data = {
           amount: transaction.amount, type: transaction.type, public_id: transaction.public_id,
           source: { type: transaction.source_type, public_id: source.public_id },
-          user: { public_id: user.public_id }
+          user: { public_id: user.public_id },
+          created_at: transaction.created_at
         }
         event = {
           event_name: 'TransactionAdded',

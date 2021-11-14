@@ -14,10 +14,10 @@ if Rails.env.development?
   # )
 end
 
-class AccountingKarafka < Karafka::App
+class AnalyticsKarafka < Karafka::App
   setup do |config|
     config.kafka.seed_brokers = %w[kafka://127.0.0.1:9092]
-    config.client_id = 'accounting'
+    config.client_id = 'analytics'
     config.batch_consuming = true
   end
 
@@ -52,10 +52,6 @@ class AccountingKarafka < Karafka::App
     end
 
     consumer_group :tasks do
-      topic :"tasks-stream" do
-        consumer TasksConsumer
-      end
-
       topic :"tasks-lifecycle" do
         consumer TasksConsumer
       end
@@ -68,4 +64,4 @@ Karafka.monitor.subscribe('app.initialized') do
   # initialization
 end
 
-AccountingKarafka.boot!
+AnalyticsKarafka.boot!

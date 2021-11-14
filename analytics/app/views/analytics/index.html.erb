@@ -1,0 +1,37 @@
+<h1>Analytics</h1>
+<h3>Hello, <%= current_user.name %></h3>
+
+<h4>Today the company earned <%= @today_earnings_sum %> popubuks</h4>
+<h4>There are <%= @profitable_popugs_count %> popugs with minus balances</h4>
+
+<% if @expensive_tasks.any? %>
+<table>
+  <thead>
+  <tr>
+    <th>Public id</th>
+    <th>Title</th>
+    <th>Jira id</th>
+    <th>Description</th>
+    <th>Price</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @expensive_tasks.each do |task| %>
+    <tr>
+      <td><%= task.public_id %></td>
+      <td><%= task.title %></td>
+      <td><%= task.jira_id %></td>
+      <td><%= task.description %></td>
+      <td><%= task.assignee.name %></td>
+      <td><%= task.completed? ? "Millet is in the bowl" : "The bird is in the cage" %></td>
+      <td><%= link_to 'Show', task %></td>
+      <td><%= task.open? && current_user.admin? ? link_to('Edit', edit_task_path(task)) : "" %></td>
+      <td><%= task.completed? ? "" : link_to('Put millet in the bowl', complete_task_path(task), method: :patch) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<% end %>
+
+<%= link_to 'Logout', logout_path, method: :delete %>

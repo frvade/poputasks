@@ -16,10 +16,14 @@ class TasksConsumer < ApplicationConsumer
         assignee = User.find_by(public_id: event_data['assignee']['public_id'])
         next unless task && assignee
 
-        task.update!(assignee: assignee)
-
         Commands::Tasks::Price.call!(task) if task.price.zero?
+
+        task.assignee = assignee
+        task.validate!
         Commands::Transactions::Add.call!(task.assignee, task, -task.price)
+
+        # we do it after transaction add to be sure that money were deducted
+        task.save!
       when 'TaskCompleted'
         task = Task.find_by!(public_id: event_data['public_id'])
 

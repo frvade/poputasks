@@ -11,5 +11,8 @@ end
 Dir.chdir([APP_ROOT, 'accounting'].join(File::SEPARATOR)) do
   spawn "bin/setup"
 end
+Dir.chdir([APP_ROOT, 'analytics'].join(File::SEPARATOR)) do
+  spawn "bin/setup"
+end
 
 Process.waitall
