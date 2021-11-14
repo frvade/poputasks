@@ -12,6 +12,8 @@ class UsersConsumer < ApplicationConsumer
         event_data = { public_id: public_id, role: event_data['new_role'] }
       when 'UserDeleted'
         event_data = { public_id: public_id, active: false }
+      when 'UserBalanceChanged'
+        event_data = { public_id: public_id, balance: event_data['new_balance'] }
       else
         # store events in DB
       end

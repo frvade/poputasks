@@ -28,6 +28,8 @@ module Commands
         }
         EventProducer.produce_sync(event, 'payouts.added', 'payouts-add')
 
+        # TODO: send an mail to #{user} with payout amount #{payout.amount}
+
         success!(payout)
       end
     end

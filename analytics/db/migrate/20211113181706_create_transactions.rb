@@ -6,7 +6,7 @@ class CreateTransactions < ActiveRecord::Migration[6.1]
       t.belongs_to :user, foreign_key: true, null: false
       t.references :source, polymorphic: true
 
-      t.uuid :public_id
+      t.uuid :public_id, null: false, index: { unique: true }
 
       t.timestamp :created_at
     end

@@ -49,6 +49,10 @@ class AnalyticsKarafka < Karafka::App
       topic :"users-role-changes" do
         consumer UsersConsumer
       end
+
+      topic :"users-balance-changes" do
+        consumer UsersConsumer
+      end
     end
 
     consumer_group :tasks do

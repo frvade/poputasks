@@ -10,8 +10,8 @@ class TransactionsConsumer < ApplicationConsumer
         source = event_data.delete("source")
         transaction_user = event_data.delete("user")
         user = User.find_by!(public_id: transaction_user["public_id"])
-        transaction_data = event_data.merge(user: user, source_id: source["id"], source_type: source["type"] )
-        Transaction.create!(transaction_data)
+        transaction_data = event_data.merge(user_id: user.id, source_id: source["id"], source_type: source["type"] )
+        Transaction.upsert(transaction_data, unique_by: :public_id)
       else
         # store events in DB
       end

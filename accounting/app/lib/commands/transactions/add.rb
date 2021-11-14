@@ -18,8 +18,8 @@ module Commands
 
         event_data = {
           amount: transaction.amount, type: transaction.type, public_id: transaction.public_id,
-          source: { type: transaction.source_type, public_id: source.public_id },
-          user: { public_id: user.public_id },
+          source: { type: transaction.source_type, public_id: transaction.source.public_id },
+          user: { public_id: transaction.user.public_id },
           created_at: transaction.created_at
         }
         event = {
@@ -28,6 +28,13 @@ module Commands
           data: event_data
         }
         EventProducer.produce_sync(event, 'transactions.added', 'transactions-add')
+
+        event = {
+          event_name: 'UserBalanceChanged',
+          event_version: 1,
+          data: { public_id: user.public_id, new_balance: user.reload.balance }
+        }
+        EventProducer.produce_sync(event, 'users.balance_changed', 'users-balance-changes')
 
         success!(transaction)
       end
