@@ -56,6 +56,10 @@ class AnalyticsKarafka < Karafka::App
     end
 
     consumer_group :tasks do
+      topic :"tasks-stream" do
+        consumer TasksConsumer
+      end
+
       topic :"tasks-lifecycle" do
         consumer TasksConsumer
       end
