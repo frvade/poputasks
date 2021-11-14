@@ -8,10 +8,10 @@ class AnalyticsController < ApplicationController
     @today_earnings_sum = - Transaction.by_time.sum(:amount)
     @expensive_tasks = Task
                          .where("tasks.id = (
-                           SELECT DISTINCT ON (created_at::date)
+                           SELECT DISTINCT ON (completed_at::date)
                              id
                            FROM tasks t
-                           ORDER BY created_at::date, price DESC
+                           ORDER BY completed_at::date, price DESC
                          )")
     @profitable_popugs_count = User.profitable.count
   end

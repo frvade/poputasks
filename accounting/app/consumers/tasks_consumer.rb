@@ -26,6 +26,7 @@ class TasksConsumer < ApplicationConsumer
         task.save!
       when 'TaskCompleted'
         task = Task.find_by!(public_id: event_data['public_id'])
+        task.update!(status: :completed)
 
         Commands::Tasks::Price.call!(task) if task.price.zero?
         Commands::Transactions::Add.call!(task.assignee, task, 2 * task.price)

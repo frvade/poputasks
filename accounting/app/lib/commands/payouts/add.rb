@@ -31,7 +31,7 @@ module Commands
           event_version: 1,
           data: event_data
         }
-        EventProducer.produce_sync(event, 'transactions.added', 'transactions-add')
+        EventProducer.produce_sync(event, 'payouts.added', 'payouts-add')
 
         success!(payout)
       end

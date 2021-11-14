@@ -56,6 +56,12 @@ class AnalyticsKarafka < Karafka::App
         consumer TasksConsumer
       end
     end
+
+    consumer_group :transactions do
+      topic :"transactions-add" do
+        consumer TransactionsConsumer
+      end
+    end
   end
 end
 

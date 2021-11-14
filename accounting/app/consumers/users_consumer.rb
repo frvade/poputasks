@@ -16,7 +16,7 @@ class UsersConsumer < ApplicationConsumer
         # store events in DB
       end
 
-      User.upsert(event_data, unique_by: :public_id)
+      User.upsert(event_data, unique_by: :public_id) if event_data.dig("public_id")
     end
   end
 end
